@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AuthModule } from './auth.module';
+import { userTypeOrmConfig } from '@app/entities/user/UserTypeOrmConfig';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AuthModule, {

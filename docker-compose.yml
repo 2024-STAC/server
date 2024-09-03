@@ -1,5 +1,6 @@
 services:
   api:
+    container_name: api_gateway
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
@@ -9,6 +10,7 @@ services:
       NODE_ENV: production
 
   auth:
+    container_name: auth_service
     build:
       context: .
       dockerfile: ./apps/auth/Dockerfile
@@ -17,5 +19,21 @@ services:
 
   redis:
     image: redis:7
+    container_name: redis
+    restart: always
     ports:
       - "6379:6379"
+  
+  user_db:
+    image: postgres
+    container_name: user_postgres_db
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_user
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8

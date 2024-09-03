@@ -15,8 +15,8 @@ describe('ApiController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(apiController.getHello()).toBe('Hello World!');
+    it('should return "Hello Jisang"', () => {
+      expect(apiController.getHello()).toBe('Hello Jisang');
     });
   });
 });
