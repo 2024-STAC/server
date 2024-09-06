@@ -14,9 +14,9 @@ describe('ApiController', () => {
     apiController = app.get<ApiController>(ApiController);
   });
 
-  describe('root', () => {
-    it('should return "Hello Jisang"', () => {
-      expect(apiController.getHello()).toBe('Hello Jisang');
-    });
-  });
+  // describe('root', () => {
+  //   it('should return "Hello Jisang"', () => {
+  //     expect(apiController.getHello()).toBe('Hello Jisang');
+  //   });
+  // });
 });

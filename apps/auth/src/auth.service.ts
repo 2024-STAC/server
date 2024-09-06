@@ -2,24 +2,18 @@ import { CreateUserDto, UpdateUserDto } from '@app/dto';
 import { User } from '@app/entities/user/UserEntity';
 import { UserQueryRepository } from '@app/entities/user/UserQueryRepository';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly config: ConfigService,
     private jwtService: JwtService,
     private userQueryRepository: UserQueryRepository,
   ) {}
 
-  getHello(event: string): void {
-    console.log(`Hello ${event}`);
-  }
-
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userQueryRepository.findOne({ where: { email } });
+  async validateUser(id: string, password: string): Promise<any> {
+    const user = await this.userQueryRepository.findOne({ where: { id } });
     if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
@@ -28,7 +22,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { id: user.id, sub: user.id };
     await this.updateLastLogin(user.id);
     return {
       access_token: this.jwtService.sign(payload),

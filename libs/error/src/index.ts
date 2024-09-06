@@ -1,1 +1,1 @@
-export * from "./globalExceptionFilter.filter"
+export * from "./customRpcExceptionFilter.filter"

@@ -7,10 +7,6 @@ import { catchError, throwError, timeout } from 'rxjs';
 export class ApiService {
     constructor(@Inject('AUTH_SERVICE') private authClient : ClientProxy) {}
 
-    async getHello(data: any) {
-        this.authClient.emit("hello", data)
-    }
-
     login(data: any) {
         const sanitizedData = {
           id: data.id,
@@ -18,9 +14,6 @@ export class ApiService {
         };
         return this.authClient.send('login', sanitizedData).pipe(
           timeout(5000),
-          catchError((err) => {
-            return throwError(() => err);
-          }),
         );
     }
 
@@ -36,7 +29,6 @@ export class ApiService {
 
         return this.authClient.send("join", sanitizedData).pipe(
             timeout(5000),
-            catchError(err => throwError(() => err))
         )
     }
 
@@ -52,7 +44,6 @@ export class ApiService {
 
         return this.authClient.send("update", sanitizedData).pipe(
             timeout(5000),
-            catchError(err => throwError(() => err))
         )
     }
 
@@ -63,7 +54,6 @@ export class ApiService {
 
         return this.authClient.send("delete", sanitizedData).pipe(
             timeout(5000),
-            catchError(err => throwError(() => err))
         )
     }
 }

@@ -1,16 +1,10 @@
-import { Controller, Delete, Get, Patch, Post, Req } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Req, UseFilters } from '@nestjs/common';
 import { ApiService } from './api.service';
 import { firstValueFrom } from 'rxjs';
 
 @Controller('api')
 export class ApiController {
   constructor(private readonly apiService: ApiService) {}
-
-  @Get('/status')
-  async getHello() {
-    return await this.apiService.getHello('Jisang');
-  }
-
   @Post('/auth/login')
   async login(@Req() req) {
     return await firstValueFrom(this.apiService.login(req));

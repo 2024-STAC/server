@@ -59,6 +59,12 @@
       ],
       "@app/dto/*": [
         "libs/dto/src/*"
+      ],
+      "@app/middlewares": [
+        "libs/middlewares/src"
+      ],
+      "@app/middlewares/*": [
+        "libs/middlewares/src/*"
       ]
     }
   }
