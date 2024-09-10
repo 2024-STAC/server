@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express';
  * @see https://github.com/boostcampwm-2022/web03-FanUP/blob/dev/server/gateway/src/common/middleware/logger.middleware.ts
  */
 @Injectable()
-export default class LoggerMiddleware implements NestMiddleware {
+export class LoggerMiddleware implements NestMiddleware {
   private logger: Logger = new Logger('HTTP');
 
   use(req: Request, res: Response, next: NextFunction) {

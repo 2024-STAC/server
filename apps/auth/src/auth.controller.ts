@@ -1,8 +1,9 @@
 import { Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './strategy/guards/local-auth.guard';
-import { JwtAuthGuard } from './strategy/guards/jwt-auth.guard';
+import { LocalAuthGuard } from './local-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { LoginUserDTO } from '@app/dto';
 
 
 @Controller()
@@ -11,8 +12,8 @@ export class AuthController {
 
   @EventPattern('login')
   @UseGuards(LocalAuthGuard)
-  async login(req) {
-    return this.authService.login(req.user);
+  async login(req : LoginUserDTO) {
+    return this.authService.login(req);
   }
 
   @EventPattern('join')
@@ -20,6 +21,11 @@ export class AuthController {
     return this.authService.join(req);
   }
 
+  @EventPattern('available')
+  async availableId(req) {
+    return this.authService.availableId(req);
+  }
+    
   @EventPattern('update')
   @UseGuards(JwtAuthGuard)
   async update(req) {

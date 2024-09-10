@@ -9,6 +9,7 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
+    "rootDir": "./",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
@@ -65,6 +66,12 @@
       ],
       "@app/middlewares/*": [
         "libs/middlewares/src/*"
+      ],
+      "@app/config": [
+        "libs/config/src"
+      ],
+      "@app/config/*": [
+        "libs/config/src/*"
       ]
     }
   }

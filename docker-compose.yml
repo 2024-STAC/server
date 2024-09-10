@@ -1,4 +1,4 @@
-services:
+services: 
   api:
     container_name: api_gateway
     build:
@@ -8,6 +8,12 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
+    depends_on:
+      - redis
+      - auth
+      - community
+    links:
+      - redis
 
   auth:
     container_name: auth_service
@@ -16,6 +22,18 @@ services:
       dockerfile: ./apps/auth/Dockerfile
     environment:
       NODE_ENV: production
+    depends_on:
+      - user_db
+  
+  community:
+    container_name: community_service
+    build:
+      context: .
+      dockerfile: ./apps/community/Dockerfile
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - community_db
 
   redis:
     image: redis:7
@@ -23,6 +41,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
   
   user_db:
     image: postgres
@@ -36,4 +55,18 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres_user
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+  
+  community_db:
+    image: postgres
+    container_name: community_postgres_db
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_community
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8

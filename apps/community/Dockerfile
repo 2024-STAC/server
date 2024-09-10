@@ -11,13 +11,13 @@ COPY ./pnpm-workspace.yaml ./pnpm-lock.yaml ./
 COPY ./libs ./libs
 COPY ./package.json ./package.json
 COPY ./tsconfig.json ./tsconfig.json
-COPY ./apps/api ./apps/api
+COPY ./apps/community ./apps/community
 COPY ./tsconfig.build.json ./tsconfig.build.json
 
 RUN ls -la ./libs
 # Install dependencies and build the service
 RUN pnpm install --frozen-lockfile
-RUN pnpm run build api
+RUN pnpm run build community
 RUN pnpm run build core dto entities error config middlewares modules utils
 RUN ls -la
 
@@ -31,7 +31,7 @@ RUN npm install -g pnpm
 
 # Copy only the necessary files to run the application
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/dist/apps/api/src ./dist/api
+COPY --from=builder /app/dist/apps/community/src ./dist/community
 COPY --from=builder /app/dist/libs /libs 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/node_modules /node_modules
@@ -39,10 +39,10 @@ COPY ./tsconfig.json ./tsconfig.json
 COPY ./tsconfig.build.json ./tsconfig.build.json
 
 
-# RUN ls -la /app/dist/api/src
+# RUN ls -la /app/dist/community/src
 RUN ls -la /app/dist
 RUN ls -la /app
 
 # Expose the port and start the application
 EXPOSE 3000
-CMD ["node", "dist/api/main.js"]
+CMD ["node", "dist/community/main.js"]

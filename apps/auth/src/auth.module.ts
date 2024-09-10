@@ -2,14 +2,13 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { validate } from '@app/utils/env.validation';
+import { validate } from '@app/utils';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '@app/entities/user/UserEntity';
+import { User, UserRepository } from '@app/entities';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { UserQueryRepository } from '@app/entities/user/UserQueryRepository';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategy/local.strategy';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
+        host: 'user_postgres_db',
         port: 5432,
         username: configService.get<string>('USER_POSTGRES_USER'),
         password: configService.get<string>('USER_POSTGRES_PASSWORD'),
@@ -32,6 +31,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -44,11 +44,12 @@ import { JwtStrategy } from './strategy/jwt.strategy';
   ],
   controllers: [AuthController],
   providers: [
-    LocalStrategy,
-    JwtStrategy,
     AuthService,
+    LocalStrategy,
+    UserRepository,
+    JwtStrategy,
     JwtService,
-    UserQueryRepository,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

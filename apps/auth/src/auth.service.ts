@@ -1,24 +1,36 @@
 import { CreateUserDto, UpdateUserDto } from '@app/dto';
-import { User } from '@app/entities/user/UserEntity';
-import { UserQueryRepository } from '@app/entities/user/UserQueryRepository';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { User, UserRepository } from '@app/entities';
+import { CustomRpcException } from '@app/error';
+import { HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
+  private logger: Logger = new Logger("AUTH");
+
   constructor(
     private jwtService: JwtService,
-    private userQueryRepository: UserQueryRepository,
+    private userRepository: UserRepository,
   ) {}
 
-  async validateUser(id: string, password: string): Promise<any> {
-    const user = await this.userQueryRepository.findOne({ where: { id } });
-    if (user && user.password === password) {
+  async validateUser(id : string, password : string): Promise<any> {
+    const user = await this.userRepository.findById(id);
+    const isCompare = await bcrypt.compare(user.password, password);
+    
+    if (user && isCompare) {
       const { password, ...result } = user;
       return result;
     }
     return null;
+  }
+
+  async availableId(id: string) {
+    const user = await this.userRepository.findById(id);
+    if (user) {
+      return false;
+    }
+    return true;
   }
 
   async login(user: any) {
@@ -30,25 +42,31 @@ export class AuthService {
   }
 
   async join(user: CreateUserDto) {
-    const { id, nickname, password, email, major } = user;
+    const { id, nickname, password, email, major, role } = user;
+    const existUser = this.userRepository.findById(id);
+    if (existUser) {
+      throw new CustomRpcException("User already exists", HttpStatus.CONFLICT);
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    return await this.userQueryRepository.save({
+
+    return await this.userRepository.save({
       id,
       nickname,
       password: hashedPassword,
       email,
       major,
-    });
-  }
-
-  async updateLastLogin(userId: number): Promise<void> {
-    await this.userQueryRepository.update(userId, {
+      role,
       lastLogin: new Date(),
     });
   }
 
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.userRepository.updateLastLogin(userId,new Date(),);
+  }
+
   async delete(userId: string): Promise<void> {
-    const result = await this.userQueryRepository.delete(userId);
+    const result = await this.userRepository.delete(userId);
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
@@ -58,9 +76,7 @@ export class AuthService {
     userId: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    const user = await this.userQueryRepository.findOne({
-      where: { id: userId },
-    });
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
@@ -70,7 +86,7 @@ export class AuthService {
     }
 
     Object.assign(user, updateUserDto);
-    return this.userQueryRepository.save(user);
+    return this.userRepository.save(user);
   }
 }
 

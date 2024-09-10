@@ -15,15 +15,16 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (!response.status) {
+    if (!response.status || !exception.status) {
       this.logger.error('Response object does not have status method');
-      return;
+      return response.status(500).json({
+        statusCode: 500,
+        message: 'Internal server error'
+      })
     }
 
     const errorResponse = exception.message;
     const status = exception.status;
-
-    this.logger.error('Converting RPC Error to HTTP:', errorResponse);
 
     response.status(status).json({
       statusCode: status,

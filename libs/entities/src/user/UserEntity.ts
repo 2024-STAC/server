@@ -1,10 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { Major } from './Major';
 import { Role } from './Role';
 
-@Entity()
+@Entity("users")
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn('varchar', {
+    length: 10
+  })
   id: string;
 
   @Column()
@@ -17,10 +19,10 @@ export class User {
   email: string;
 
   @Column({ type: 'enum', enum: Major })
-  major: Major;
+  major!: Major;
 
   @Column({ type: 'enum', enum: Role })
-  role: Role;
+  role!: Role;
     
   // @Column()
   // jobs: Jobs[];

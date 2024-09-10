@@ -99,7 +99,10 @@
       "^@app/exception(|/.*)$": "<rootDir>/libs/exception/src/$1",
       "^@app/error(|/.*)$": "<rootDir>/libs/error/src/$1",
       "^@app/dto(|/.*)$": "<rootDir>/libs/dto/src/$1",
-      "^@app/middlewares(|/.*)$": "<rootDir>/libs/middlewares/src/$1"
+      "^@app/middlewares(|/.*)$": "<rootDir>/libs/middlewares/src/$1",
+      "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
+      "^@app/user(|/.*)$": "<rootDir>/libs/user/src/$1",
+      "^@app/strategy(|/.*)$": "<rootDir>/libs/strategy/src/$1"
     }
   }
 }

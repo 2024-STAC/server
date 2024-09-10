@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { HttpExceptionResponse } from './httpExceptionResponse';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -22,7 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     const status = exception.getStatus();
-    const errorResponse = exception.getResponse() as object;
+    const errorResponse = (exception.getResponse() as HttpExceptionResponse).message ||exception.message;
 
     const log = {
       timestamp: new Date(),
@@ -37,7 +38,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: errorResponse['message'] || 'Internal server error',
+      message: errorResponse || 'Internal server error',
     });
   }
 }

@@ -1,11 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/apps/api",
-    "baseUrl": "./",
-    "paths": {
-      "@app/*": ["../../libs/*/src"] // libs 경로 명시
-    }
+    "declaration": true,
+    "outDir": "../../dist/libs/config"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
